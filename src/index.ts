@@ -1,8 +1,12 @@
 import express from "express"
 import { Request,Response } from "express"
 import { todos } from "./db"
+import cors from "cors"
 const app = express()
-
+app.use(express.json())
+app.use(cors({
+origin:"*"
+}))
 app.post("/",(req,res)=>{
     const {title,description} = req.body;
     const id = crypto.randomUUID()
@@ -19,7 +23,8 @@ app.delete("/:todoId",(req:Request,res:Response)=>{
 })
 app.put("/:todoId",(req,res)=>{
     const {title} = req.body
-    todos[req.params.todoId] = title
+    const todo = todos[req.params.todoId]
+    todos[req.params.todoId] = {title,description:todo.description}
     res.send(todos).status(200)
 })
 app.listen(8005,()=>{
